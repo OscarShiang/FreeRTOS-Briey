@@ -57,22 +57,29 @@ void vSendString( const char *s )
 
 void handle_trap(void)
 {
+	portENTER_CRITICAL();
+
 	vSendString("entering trap");
-	while (1)
-		;
+	TIMER_INTERRUPT->PENDINGS = 1;
+	vSendString("exting trap");
+
+	portEXIT_CRITICAL();
 }
 
 void vPortSetupTimerInterrupt(void)
 {
-	// asm volatile ("")
+        asm volatile("li t0, 0x1808\n\t"
+		     "csrw mstatus, t0\n\t"
+		     "li t0, 0x880\n\t"
+		     "csrw mie, t0\n\t");
 
         interruptCtrl_init(TIMER_INTERRUPT);
         prescaler_init(TIMER_PRESCALER);
         timer_init(TIMER_A);
 
-        TIMER_PRESCALER->LIMIT = 10;
+        TIMER_PRESCALER->LIMIT = 50;
 
-        TIMER_A->LIMIT = 10;
+        TIMER_A->LIMIT = 10000;
         TIMER_A->CLEARS_TICKS = 0x00010002;
 
         TIMER_INTERRUPT->PENDINGS = 0xF;
