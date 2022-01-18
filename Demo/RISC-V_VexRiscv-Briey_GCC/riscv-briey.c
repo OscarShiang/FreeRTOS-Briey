@@ -26,6 +26,7 @@
  */
 
 #include <FreeRTOS.h>
+#include <task.h>
 
 #include <string.h>
 
@@ -59,9 +60,8 @@ void handle_trap(void)
 {
 	portENTER_CRITICAL();
 
-	vSendString("entering trap");
+	xTaskIncrementTick();
 	TIMER_INTERRUPT->PENDINGS = 1;
-	vSendString("exting trap");
 
 	portEXIT_CRITICAL();
 }
@@ -77,13 +77,11 @@ void vPortSetupTimerInterrupt(void)
         prescaler_init(TIMER_PRESCALER);
         timer_init(TIMER_A);
 
-        TIMER_PRESCALER->LIMIT = 50;
+        TIMER_PRESCALER->LIMIT = 500;
 
-        TIMER_A->LIMIT = 10000;
+        TIMER_A->LIMIT = 1000;
         TIMER_A->CLEARS_TICKS = 0x00010002;
 
         TIMER_INTERRUPT->PENDINGS = 0xF;
         TIMER_INTERRUPT->MASKS = 0x1;
-
-        vSendString("interrupt setup");
 }
