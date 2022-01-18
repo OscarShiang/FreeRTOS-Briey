@@ -49,7 +49,7 @@ SRCS = main.c main_blinky.c riscv-briey.c \
 	$(RTOS_SOURCE_DIR)/portable/MemMang/heap_4.c \
 	$(RTOS_SOURCE_DIR)/portable/GCC/RISC-V/port.c
 
-ASMS = start.S sysport.S \
+ASMS = start.S \
 	$(RTOS_SOURCE_DIR)/portable/GCC/RISC-V/portASM.S
 
 OBJS = $(SRCS:%.c=$(BUILD_DIR)/%.o) $(ASMS:%.S=$(BUILD_DIR)/%.o)
